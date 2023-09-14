@@ -53,7 +53,20 @@ export default function RegisterForm() {
       console.error('Registration Error:', error);
     }
   };
+  async function  onSubmitHandler(values) {
+    console.log("onSubmitHandler values",values)
+    try {
+      console.log("values",values)
+      // Make a POST request to your server's registration endpoint
+      const response = await axios.post(URL, values);
 
+      // Handle the server response as needed (e.g., show a success message)
+      console.log('Registration Successful:', response.data);
+    } catch (error) {
+      // Handle any registration errors (e.g., show an error message)
+      console.error('Registration Error:', error);
+    }
+  }
   return (
     <>
       <SafeAreaView style={styles.topSafeArea} />
@@ -86,7 +99,7 @@ export default function RegisterForm() {
             billingInstructions:""
           }}
           onSubmit={(values, actions) => {
-            handleSubmit(values, actions);
+            onSubmitHandler(values, actions);
           }}
           validationSchema={validationSchema}
         >

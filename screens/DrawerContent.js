@@ -10,16 +10,13 @@ function DrawerContent({ navigation }) {
         onPress={() => navigation.navigate('Home')}
       />
       <Button
-        title="Settings"
-        onPress={() => navigation.navigate('Settings')}
+        title="Enquiries"
+        onPress={() => navigation.navigate('Enquiries')}
       />
+
        <Button
-        title="Enquiry"
-        onPress={() => navigation.navigate('Enquiry')}
-      />
-       <Button
-        title="Enroll"
-        onPress={() => navigation.navigate('Enroll')}
+        title="Contracts"
+        onPress={() => navigation.navigate('Contracts')}
       />
       <Button
         title="Register"

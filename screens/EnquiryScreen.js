@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Row } from 'react-native-table-component';
-import { View, Text, StyleSheet, SafeAreaView,TouchableOpacity, ScrollView } from 'react-native';
+import {Button, View, Text, StyleSheet, SafeAreaView,TouchableOpacity, ScrollView } from 'react-native';
 import axios from 'axios';
 
 const URL = "http://13.233.26.160:3002/leads";
 
-const SettingsScreen = () => {
+const EnquiryScreen = ({navigation}) => {
   const tableHead = ['#', 'ID', 'Name', 'Phone'];
   const [tableData, setTableData] = useState([]);
   const [expandedRowIndex, setExpandedRowIndex] = useState(null);
@@ -61,6 +61,10 @@ const SettingsScreen = () => {
                   <Text style={styles.cell}>City: {rowData.city}</Text>
                   <Text style={styles.cell}>Person To Contact: {rowData.personToContact}</Text>
                   <Text style={styles.cell}>Person To Contact Phone: {rowData.personToContactPhone}</Text>
+                  <Button
+        title="Go to Contract"
+        onPress={() => navigation.navigate('Contracts')}
+      />
                 </View>
               )}
             </React.Fragment>
@@ -82,4 +86,4 @@ const styles = StyleSheet.create({
   cell: { marginBottom: 5 },
 });
 
-export default SettingsScreen;
+export default EnquiryScreen;

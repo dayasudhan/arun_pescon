@@ -7,8 +7,16 @@ function HomeScreen({ navigation }) {
     <View>
       <Text>Home Screen</Text>
       <Button
-        title="Go to Settings"
-        onPress={() => navigation.navigate('Settings')}
+        title="Go to Enquiries"
+        onPress={() => navigation.navigate('Enquiries')}
+      />
+      <Button
+        title="Go to Registration"
+        onPress={() => navigation.navigate('Register')}
+      />
+            <Button
+        title="Go to Contracts"
+        onPress={() => navigation.navigate('Contracts')}
       />
     </View>
   );

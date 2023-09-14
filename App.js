@@ -5,10 +5,10 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 
 // Import your screens and DrawerContent component
 import HomeScreen from './screens/HomeScreen';
-import SettingsScreen from './screens/SettingsScreen';
+import EnquiryScreen from './screens/EnquiryScreen';
 import DrawerContent from './screens/DrawerContent';
-import EnquiryScreen from './screens/Enquiry';
-import EnrollScreen from './screens/Enroll';
+
+import ContractScreen from './screens/ContractScreen';
 import RegisterForm from './screens/RegisterForm';
 const Drawer = createDrawerNavigator();
 
@@ -17,9 +17,8 @@ function App() {
     <NavigationContainer>
       <Drawer.Navigator drawerContent={(props) => <DrawerContent {...props} />}>
         <Drawer.Screen name="Home" component={HomeScreen} />
-        <Drawer.Screen name="Settings" component={SettingsScreen} />
-        <Drawer.Screen name="Enquiry" component={EnquiryScreen} />
-        <Drawer.Screen name="Enroll" component={EnrollScreen} />
+        <Drawer.Screen name="Enquiries" component={EnquiryScreen} />
+        <Drawer.Screen name="Contracts" component={ContractScreen} />
         <Drawer.Screen name="Register" component={RegisterForm} />
       </Drawer.Navigator>
     </NavigationContainer>
