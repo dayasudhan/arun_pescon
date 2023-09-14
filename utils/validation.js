@@ -2,7 +2,7 @@ import * as Yup from "yup";
 
 // https://github.com/jquense/yup
 export const validationSchema = Yup.object().shape({
-  firstName: Yup.string().required("FirstName is required"),
+  name: Yup.string().required("Input is required"),
   email: Yup.string()
     .email("Enter a valid email")
     .required("Please enter a registered email"),

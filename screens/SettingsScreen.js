@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Row } from 'react-native-table-component';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView,TouchableOpacity, ScrollView } from 'react-native';
 import axios from 'axios';
 
 const URL = "http://13.233.26.160:3002/leads";
@@ -31,7 +31,8 @@ const SettingsScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+     
       <Table borderStyle={{ borderWidth: 2, borderColor: '#c8e1ff' }}>
         <Row data={tableHead} style={styles.head} textStyle={styles.headText} />
         <ScrollView style={styles.scrollView}>
@@ -66,7 +67,7 @@ const SettingsScreen = () => {
           ))}
         </ScrollView>
       </Table>
-    </View>
+    </SafeAreaView>
   );
 };
 

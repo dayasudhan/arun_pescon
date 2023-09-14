@@ -1,112 +1,181 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, FlatList, TextInput, Button, TouchableOpacity } from 'react-native';
-// import {Picker} from 'react-native-picker';
-import axios from 'axios';
-const URL= "http://13.233.26.160:3002/leads" 
-function EnquiryScreen({ navigation }){
-  const [data, setData] = useState([]);
-  const [expandedRowIndex, setExpandedRowIndex] = useState(null);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [filteredData, setFilteredData] = useState(data);
-  const [searchKey, setSearchKey] = useState('name');
-  // const { user, token } = useContext(AuthContext);
+import React from "react";
+import {
+  SafeAreaView,
+  View,
+  Text,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  TextInput,
+} from "react-native";
+import { StatusBar } from "expo-status-bar";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { Formik } from "formik";
+import { validationSchema } from "./../utils/validation";
+import { styles } from "./../utils/styles";
 
-  useEffect(() => {
-    // console.log("user123", user);
-    // console.log("token123", token);
-    console.log("data", data.length);
-    if (data.length === 0) {
-      axios.get(URL)
-        .then(response => {
-          if (response.status !== 401) {
-            setData(response.data);
-            setFilteredData(response.data);
-          } else {
-            setData([]);
-            setFilteredData([]);
-          }
-          console.log(response);
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    }
-  }, []);
+const ErrorMessage = ({ errorValue }) => {
+  return errorValue ? (
+    <View style={styles.errorContainer}>
+      <Text style={styles.errorText}>{errorValue}</Text>
+    </View>
+  ) : null;
+};
 
-  const handleDetailButtonClick = (id) => {
-    console.log("handleDetailButtonClick", id);
-    const queryString = `?id=${id}`;
-    const newPageUrl = '/agreement' + queryString;
-    // Replace window.open with React Navigation navigation.navigate or your preferred navigation method
-  };
-
-  const handleRowClick = (index) => {
-    setExpandedRowIndex((prevIndex) => (prevIndex === index ? null : index));
-  };
-
-  const handleSearchChange = (value) => {
-    setSearchQuery(value);
-    console.log("value", value, data);
-
-    const filteredResults = data.filter((item) =>
-      item?.[searchKey]?.toLowerCase().includes(value.toLowerCase())
-    );
-
-    setFilteredData(filteredResults);
-  };
-
-  const handleDropdownChange = (value) => {
-    console.log('handleDropdownChange: Selected Value:', value);
-    setSearchKey(value);
-  };
-
-  const searchOptions = [
-    { key: 'name', label: 'Name' },
-    { key: 'id', label: 'Id' },
-    { key: 'city', label: 'City' },
-    { key: 'phone', label: 'Phone' },
-  ];
+export default function EnquiryScreen() {
+  function onSubmitHandler(values) {
+    console.log(values);
+  }
 
   return (
-    <View>
-      {/* Your search and filter UI */}
-      {/* <Picker
-        selectedValue={searchKey}
-        onValueChange={(itemValue) => handleDropdownChange(itemValue)}>
-        {searchOptions.map((option) => (
-          <Picker.Item key={option.key} label={option.label} value={option.key} />
-        ))}
-      </Picker> */}
-      <TextInput
-        placeholder="Search..."
-        value={searchQuery}
-        onChangeText={handleSearchChange}
-      />
-      
-      {/* Your table */}
-      <FlatList
-        data={filteredData}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item, index }) => (
-          <View>
-            <TouchableOpacity onPress={() => handleRowClick(index)}>
-              <Text>{index + 1}</Text>
-              <Text>{item.id}</Text>
-              <Text>{item.name}</Text>
-              <Text>{item.phone}</Text>
-              {/* <Button title="Agreement" onPress={() => handleDetailButtonClick(item._id)} /> */}
-            </TouchableOpacity>
-            {expandedRowIndex === index && (
-              <View>
-                {/* Render additional content here */}
-                {/* Use <Text> for each piece of information */}
+    <>
+      <SafeAreaView style={styles.topSafeArea} />
+
+      <StatusBar style="light" />
+
+      <SafeAreaView style={styles.container}>
+        {/* <View style={styles.header}>
+          <Text style={styles.headerText}>Register</Text>
+        </View> */}
+
+        {/* https://formik.org/docs/overview */}
+        <Formik
+          initialValues={{
+            firstName: "",
+            lastName: "",
+            email: "",
+            password: "",
+            confirmPassword: "",
+          }}
+          onSubmit={(values, actions) => {
+            onSubmitHandler(values, actions);
+          }}
+          validationSchema={validationSchema}
+        >
+          {({
+            handleChange,
+            values,
+            errors,
+            touched,
+            handleSubmit,
+            handleBlur,
+          }) => (
+            // https://github.com/APSL/react-native-keyboard-aware-scroll-view
+            <KeyboardAwareScrollView
+              style={styles.content}
+              showsVerticalScrollIndicator={false}
+            >
+              <View style={styles.formGroup}>
+                <Text style={styles.label}>First Name</Text>
+
+                <TextInput
+                  style={styles.input}
+                  value={values.firstName}
+                  onChangeText={handleChange("firstName")}
+                  onBlur={handleBlur("firstName")}
+                />
+
+                <ErrorMessage
+                  errorValue={touched.firstName && errors.firstName}
+                />
               </View>
-            )}
-          </View>
-        )}
-      />
-    </View>
+
+              <View style={styles.formGroup}>
+                <Text style={styles.label}>Last Name</Text>
+
+                <TextInput
+                  style={styles.input}
+                  value={values.lastName}
+                  onChangeText={handleChange("lastName")}
+                  onBlur={handleBlur("lastName")}
+                />
+              </View>
+
+              <View style={styles.formGroup}>
+                <Text style={styles.label}>Email Address</Text>
+
+                <TextInput
+                  style={styles.input}
+                  value={values.email}
+                  onChangeText={handleChange("email")}
+                  onBlur={handleBlur("email")}
+                  autoCapitalize="none"
+                />
+
+                <ErrorMessage errorValue={touched.email && errors.email} />
+              </View>
+
+              <View style={styles.formGroup}>
+                <Text style={styles.label}>Password</Text>
+
+                <TextInput
+                  style={styles.input}
+                  value={values.password}
+                  onChangeText={handleChange("password")}
+                  onBlur={handleBlur("password")}
+                  autoCapitalize="none"
+                  secureTextEntry={true}
+                />
+
+                <ErrorMessage
+                  errorValue={touched.password && errors.password}
+                />
+              </View>
+
+              <View style={styles.formGroup}>
+                <Text style={styles.label}>Confirm Password</Text>
+
+                <TextInput
+                  style={styles.input}
+                  value={values.confirmPassword}
+                  onChangeText={handleChange("confirmPassword")}
+                  onBlur={handleBlur("confirmPassword")}
+                  autoCapitalize="none"
+                  secureTextEntry={true}
+                />
+
+                <ErrorMessage
+                  errorValue={touched.confirmPassword && errors.confirmPassword}
+                />
+              </View>
+              <View style={styles.formGroup}>
+                <Text style={styles.label}>Confirm Password</Text>
+
+                <TextInput
+                  style={styles.input}
+                  value={values.confirmPassword}
+                  onChangeText={handleChange("confirmPassword")}
+                  onBlur={handleBlur("confirmPassword")}
+                  autoCapitalize="none"
+                  secureTextEntry={true}
+                />
+
+                <ErrorMessage
+                  errorValue={touched.confirmPassword && errors.confirmPassword}
+                />
+              </View>
+              <View style={styles.formGroup}>
+                <Text style={styles.label}>Confirm Password</Text>
+
+                <TextInput
+                  style={styles.input}
+                  value={values.confirmPassword}
+                  onChangeText={handleChange("confirmPassword")}
+                  onBlur={handleBlur("confirmPassword")}
+                  autoCapitalize="none"
+                  secureTextEntry={true}
+                />
+
+                <ErrorMessage
+                  errorValue={touched.confirmPassword && errors.confirmPassword}
+                />
+              </View>
+              <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+                <Text style={styles.buttonText}>SUBMIT</Text>
+              </TouchableOpacity>
+            </KeyboardAwareScrollView>
+          )}
+        </Formik>
+      </SafeAreaView>
+    </>
   );
 }
-
-export default EnquiryScreen;
