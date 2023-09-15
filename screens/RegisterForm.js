@@ -5,13 +5,20 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   TextInput,
+  Alert
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Formik } from "formik";
-import { validationSchema } from "./../utils/validation";
+//import { validationSchema } from "./../utils/validation";
 import { styles } from "./../utils/styles";
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import * as Yup from 'yup';
+const validationSchema = Yup.object().shape({
+  email: Yup.string().email('Invalid email').required('Email is required'),
+  password: Yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
+});
 const ErrorMessage = ({ errorValue }) => {
   return errorValue ? (
     <View style={styles.errorContainer}>
@@ -19,6 +26,8 @@ const ErrorMessage = ({ errorValue }) => {
     </View>
   ) : null;
 };
+
+
 const URL = "http://13.233.26.160:3002/leads";
 export default function RegisterForm() {
 
@@ -40,31 +49,60 @@ export default function RegisterForm() {
   //   paymentTerms:"",
   //   billingInstructions:""
   // });
-  const handleSubmit = async (values,actions) => {
-    try {
-      console.log("values",values)
-      // Make a POST request to your server's registration endpoint
-      const response = await axios.post(URL, values);
+  // const handleSubmit = async (values,actions) => {
+  //   try {
+  //     console.log("values",values)
+  //     // Make a POST request to your server's registration endpoint
+  //     const response = await axios.post(URL, values);
 
-      // Handle the server response as needed (e.g., show a success message)
-      console.log('Registration Successful:', response.data);
-    } catch (error) {
-      // Handle any registration errors (e.g., show an error message)
-      console.error('Registration Error:', error);
-    }
+  //     // Handle the server response as needed (e.g., show a success message)
+  //     console.log('Registration Successful:', response.data);
+  //   } catch (error) {
+  //     // Handle any registration errors (e.g., show an error message)
+  //     console.error('Registration Error:', error);
+  //   }
+  // };
+  const showAlert = () => {
+    console.log("showALert")
+    Alert.alert(
+      'Alert Title',
+      'This is an example alert!',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ],
+      { cancelable: false }
+    );
   };
-  async function  onSubmitHandler(values) {
+  async function  onSubmitHandler(values,actions) {
     console.log("onSubmitHandler values",values)
     try {
+      Alert.alert(
+        'Alert Title',
+        'This is an example alert!',
+        [
+          {
+            text: 'Cancel',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel',
+          },
+          { text: 'OK', onPress: () => console.log('OK Pressed') },
+        ],
+        { cancelable: false }
+      );
       console.log("values",values)
       // Make a POST request to your server's registration endpoint
-      const response = await axios.post(URL, values);
+      // const response = await axios.post(URL, values);
 
-      // Handle the server response as needed (e.g., show a success message)
-      console.log('Registration Successful:', response.data);
+      // // Handle the server response as needed (e.g., show a success message)
+      // console.log('Registration Successful:', response.data);
     } catch (error) {
       // Handle any registration errors (e.g., show an error message)
-      console.error('Registration Error:', error);
+      //console.error('Registration Error:', error);
     }
   }
   return (
@@ -81,7 +119,7 @@ export default function RegisterForm() {
         {/* https://formik.org/docs/overview */}
         <Formik
           initialValues={{
-            name: "netra",
+            name: "netra213",
             phone: "",
             address: "",
             email: "",
@@ -98,18 +136,16 @@ export default function RegisterForm() {
             paymentTerms:"",
             billingInstructions:""
           }}
-          onSubmit={(values, actions) => {
-            onSubmitHandler(values, actions);
+          onSubmit={(values) => {
+            console.log("onSubmit")
+            console.log("values in onsubmit",values)
+            onSubmitHandler(values, null);
           }}
+          
           validationSchema={validationSchema}
         >
           {({
-            handleChange,
-            values,
-            errors,
-            touched,
-            handleSubmit,
-            handleBlur,
+           handleChange, handleSubmit, values, errors, touched
           }) => (
             // https://github.com/APSL/react-native-keyboard-aware-scroll-view
             <KeyboardAwareScrollView
@@ -123,13 +159,14 @@ export default function RegisterForm() {
                   style={styles.input}
                   value={values.name}
                   placeholder="Name.."
-                  onChangeText={handleChange("name")}
-                  onBlur={handleBlur("name")}
+                   onChangeText={handleChange("name")}
+                  // onBlur={handleBlur("name")}
+            
                 />
 
-                <ErrorMessage
+                {/* <ErrorMessage
                   errorValue={touched.name && errors.name}
-                />
+                /> */}
               </View>
 
               {/* <View style={styles.formGroup}>
@@ -335,8 +372,11 @@ export default function RegisterForm() {
                 />
               </View> */}
 
+              <TouchableOpacity style={styles.button} onPress={showAlert}>
+                <Text style={styles.buttonText}>SUBMIT1</Text>
+              </TouchableOpacity>
               <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-                <Text style={styles.buttonText}>SUBMIT</Text>
+                <Text style={styles.buttonText}>SUBMIT234</Text>
               </TouchableOpacity>
             </KeyboardAwareScrollView>
           )}

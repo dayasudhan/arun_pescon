@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Row } from 'react-native-table-component';
-import {Button, View, Text, StyleSheet, SafeAreaView,TouchableOpacity, ScrollView } from 'react-native';
+import {Button, View, Text, StyleSheet, SafeAreaView,TouchableOpacity, ScrollView,TextInput } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
 
 const URL = "http://13.233.26.160:3002/leads";
@@ -8,16 +9,21 @@ const URL = "http://13.233.26.160:3002/leads";
 const EnquiryScreen = ({navigation}) => {
   const tableHead = ['#', 'ID', 'Name', 'Phone'];
   const [tableData, setTableData] = useState([]);
+  const [data, setData] = useState([]);
   const [expandedRowIndex, setExpandedRowIndex] = useState(null);
-
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchKey, setSearchKey] = useState('name'); // Set your initial search key here
+  const searchOptions = ['name', 'id', 'city', 'phone'];
   useEffect(() => {
     if (tableData.length === 0) {
       axios.get(URL)
         .then(response => {
           if (response.status !== 401) {
             setTableData(response.data);
+            setData(response.data);
           } else {
             setTableData([]);
+            setData(response.data);
           }
         })
         .catch(error => {
@@ -25,14 +31,46 @@ const EnquiryScreen = ({navigation}) => {
         });
     }
   }, []);
+  const handleSearchChange = (text) => {
+    setSearchQuery(text);
+    const filteredResults = data.filter((item) =>
+     item?.[searchKey]?.toLowerCase().includes(text.toLowerCase())
+   );
+      setTableData(filteredResults)
+    // Implement your search logic here
+  };
 
+  const handleDropdownChange = (itemValue) => {
+    setSearchKey(itemValue);
+    // Implement your logic for handling dropdown change
+  };
   const handleRowClick = (index) => {
     setExpandedRowIndex((prevIndex) => (prevIndex === index ? null : index));
   };
 
   return (
     <SafeAreaView style={styles.container}>
-     
+         <View>
+      <View style={styles.segment}>
+        {/* <Text style={styles.label}>Search Box</Text> */}
+        <Picker
+          selectedValue={searchKey}
+          onValueChange={(itemValue) => handleDropdownChange(itemValue)}>
+          {searchOptions.map((option) => (
+            <Picker.Item key={option} label={option} value={option} />
+          ))}
+        </Picker>
+
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search..."
+          value={searchQuery}
+          onChangeText={(text) => handleSearchChange(text)}
+        />
+        <Text style={styles.header}>Customer Table</Text>
+      </View>
+      {/* Add your table component here */}
+    </View>
       <Table borderStyle={{ borderWidth: 2, borderColor: '#c8e1ff' }}>
         <Row data={tableHead} style={styles.head} textStyle={styles.headText} />
         <ScrollView style={styles.scrollView}>
