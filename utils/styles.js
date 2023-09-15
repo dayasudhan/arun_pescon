@@ -77,4 +77,8 @@ export const styles = StyleSheet.create({
     marginTop: 20,
     fontSize: 16,
   },
+  switch: {
+    alignSelf: "center",
+    transform: Platform.OS === "ios" ? [] : [{ scale: 1.5 }],
+  },
 });

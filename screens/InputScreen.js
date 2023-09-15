@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button,  TouchableOpacity,StyleSheet,SafeAreaView } from 'react-native';
+import { View, Text, TextInput, Button,  TouchableOpacity,StyleSheet,SafeAreaView,Switch } from 'react-native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { StatusBar } from "expo-status-bar";
@@ -8,7 +8,12 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { validationSchema } from "./../utils/validation";
 import { styles } from "./../utils/styles";
 import { RadioButton } from 'react-native-paper';
+
 const InputScreen = () => {
+
+  const [isEnabled, setIsEnabled] = useState(false);
+  const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
+
   const onSubmitHandler = (values) => {
     console.log('Login123 form values:', values);
   };
@@ -198,19 +203,16 @@ const InputScreen = () => {
                 /> */}
               </View>
               <View style={styles.formGroup}>
-                <Text style={styles.label}>Reneval</Text>
+                <Text style={styles.label}>Reneval: {isEnabled? ' Yes' : 'No'}</Text>
 
-                <TextInput
-                  style={styles.input}
-                  value={values.firstName}
-                  placeholder="Name.."
-                  onChangeText={handleChange("name")}
-                  onBlur={handleBlur("name")}
-                />
-
-                {/* <ErrorMessage
-                  errorValue={touched.name && errors.name}
-                /> */}
+                  <Switch
+                    trackColor={{ false: "#fff", true: "#52d964" }}
+                    thumbColor={isEnabled ? "#fff" : "#fff"}
+                    onValueChange={toggleSwitch}
+                    value={isEnabled}
+                    style={styles.switch}
+                  />
+                
               </View>
 
               <View style={styles.formGroup}>
