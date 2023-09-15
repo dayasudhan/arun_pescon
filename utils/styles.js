@@ -62,4 +62,19 @@ export const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: "center",
   },
+  radioOption: {
+    marginBottom: 10,
+  },
+  radioButtonContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  radioLabel: {
+    marginLeft: 10,
+    fontSize: 16,
+  },
+  selectedText: {
+    marginTop: 20,
+    fontSize: 16,
+  },
 });

@@ -11,8 +11,8 @@ function HomeScreen({ navigation }) {
         onPress={() => navigation.navigate('Enquiries')}
       />
       <Button
-        title="Go to Registration"
-        onPress={() => navigation.navigate('Register')}
+        title="Go to Input"
+        onPress={() => navigation.navigate('Input')}
       />
             <Button
         title="Go to Contracts"

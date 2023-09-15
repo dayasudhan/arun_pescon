@@ -1,21 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, TextInput, Button,  TouchableOpacity,StyleSheet,SafeAreaView } from 'react-native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { StatusBar } from "expo-status-bar";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-// const validationSchema = Yup.object().shape({
-//   email: Yup.string().email('Invalid email').required('Email is required'),
-//   password: Yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
-// });
+
 import { validationSchema } from "./../utils/validation";
 import { styles } from "./../utils/styles";
+import { RadioButton } from 'react-native-paper';
 const InputScreen = () => {
   const onSubmitHandler = (values) => {
-    // You can perform login logic here with values.email and values.password
     console.log('Login123 form values:', values);
   };
-
+  const [propertyType, setPropertyType] = useState('Commercial');
+  const [serviceFrequency, setServiceFrequency] = useState('Monthly');
   return (
     <>
     <SafeAreaView style={styles.topSafeArea} />
@@ -122,28 +120,53 @@ const InputScreen = () => {
                 />
               </View>
               <View style={styles.formGroup}>
-                <Text style={styles.label}>Property to be serviced</Text>
+                <Text style={styles.label}>Property to be serviced : {propertyType}</Text>
+                  <RadioButton.Group
+                  onValueChange={(value) => setPropertyType(value)}
+                  value={propertyType}
+                  >
+                    <View style={styles.radioOption}>
+                      <View style={styles.radioButtonContainer}>
+                        <RadioButton value="Commercial" />
+                        <Text style={styles.radioLabel}>Commercial</Text>
+                      </View>
+                    </View>
+                    <View style={styles.radioOption}>
+                      <View style={styles.radioButtonContainer}>
+                        <RadioButton value="Residential" />
+                        <Text style={styles.radioLabel}>Residential</Text>
+                      </View>
+                    </View>
+                  </RadioButton.Group>
+                </View>
 
-                <TextInput
-                  style={styles.input}
-                  value={values.firstName}
-                  placeholder="Name.."
-                  onChangeText={handleChange("name")}
-                  onBlur={handleBlur("name")}
-                />
- </View>
+                <View style={styles.formGroup}>
+                  <Text style={styles.label}>Service Frequeny:  {serviceFrequency}</Text>
+                  <RadioButton.Group
+                  onValueChange={(value) => setServiceFrequency(value)}
+                  value={serviceFrequency}
+                  >
+                    <View style={styles.radioOption}>
+                      <View style={styles.radioButtonContainer}>
+                        <RadioButton value="Monthly" />
+                        <Text style={styles.radioLabel}>Monthly</Text>
+                      </View>
+                    </View>
+                    <View style={styles.radioOption}>
+                      <View style={styles.radioButtonContainer}>
+                        <RadioButton value="Quarterly" />
+                        <Text style={styles.radioLabel}> Quarterly</Text>
+                      </View>
+                    </View>
+                    <View style={styles.radioOption}>
+                      <View style={styles.radioButtonContainer}>
+                        <RadioButton value="AMC" />
+                        <Text style={styles.radioLabel}> AMC</Text>
+                      </View>
+                    </View>
+                  </RadioButton.Group>
 
-<View style={styles.formGroup}>
-  <Text style={styles.label}>Service Frequeny:</Text>
-
-  <TextInput
-    style={styles.input}
-    value={values.firstName}
-    placeholder="Name.."
-    onChangeText={handleChange("name")}
-    onBlur={handleBlur("name")}
-  />
-   </View>
+                  </View>
    <View style={styles.formGroup}>
                 <Text style={styles.label}>Service Start Date</Text>
 
