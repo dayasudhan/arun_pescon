@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Row } from 'react-native-table-component';
 import {Button, View, Text, StyleSheet, SafeAreaView,TouchableOpacity, ScrollView,TextInput } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
+import { Picker  } from '@react-native-picker/picker';
 import axios from 'axios';
 
 const URL = "http://13.233.26.160:3002/leads";
