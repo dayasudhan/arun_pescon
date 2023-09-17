@@ -4,7 +4,7 @@ import {Button, View, Text, StyleSheet, SafeAreaView,TouchableOpacity, ScrollVie
 import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
 
-const URL = "http://13.233.26.160:3002/leads";
+const URL = "http://13.233.26.160:3002/contracts";
 
 const ContractScreen = ({navigation}) => {
   const tableHead = ['#', 'ID', 'Name', 'Phone'];
@@ -19,6 +19,7 @@ const ContractScreen = ({navigation}) => {
       axios.get(URL)
         .then(response => {
           if (response.status !== 401) {
+            console.log("response.data",response.data)
             setTableData(response.data);
             setData(response.data);
           } else {
@@ -67,7 +68,7 @@ const ContractScreen = ({navigation}) => {
           value={searchQuery}
           onChangeText={(text) => handleSearchChange(text)}
         />
-        <Text style={styles.header}>Customer Table</Text>
+        {/* <Text style={styles.header}>Customer Table</Text> */}
       </View>
       {/* Add your table component here */}
     </View>
@@ -92,6 +93,7 @@ const ContractScreen = ({navigation}) => {
                 />
               </TouchableOpacity>
               {expandedRowIndex === rowIndex && (
+                 <ScrollView style={styles.scrollView}>
                 <View style={styles.expandedContent}>
                   <Text style={styles.cell}>Name: {rowData.name}</Text>
                   <Text style={styles.cell}>Phone: {rowData.phone}</Text>
@@ -99,11 +101,27 @@ const ContractScreen = ({navigation}) => {
                   <Text style={styles.cell}>City: {rowData.city}</Text>
                   <Text style={styles.cell}>Person To Contact: {rowData.personToContact}</Text>
                   <Text style={styles.cell}>Person To Contact Phone: {rowData.personToContactPhone}</Text>
-                  <Button
-        title="Go to Contract"
-        onPress={() => navigation.navigate('Contracts')}
-      />
+                  {rowData.serviceHistory && <Text style={styles.cell}>Service History</Text>}
+                  {
+                    rowData.serviceHistory && rowData.serviceHistory.map((e,i)=>{
+                       const entries = Object.entries(e);
+                       <Text style={styles.cell}>Service History </Text>
+                        const ar = []
+                        ar.push(<Text style={styles.cell}>{i+1} : </Text>)
+                       entries.map(f=>
+                         ar.push(<Text style={styles.cell}>       {f[0]} : {f[1]}</Text>)
+                      )
+                      
+                     return ar;
+                    })
+                  }
+                  {/* <Button
+        title="Future Use"
+        //onPress={() => navigation.navigate('Contracts')}
+      /> */}
+      
                 </View>
+                </ScrollView>
               )}
             </React.Fragment>
           ))}

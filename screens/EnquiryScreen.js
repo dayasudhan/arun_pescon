@@ -4,7 +4,7 @@ import {Button, View, Text, StyleSheet, SafeAreaView,TouchableOpacity, ScrollVie
 import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
 
-const URL = "http://13.233.26.160:3002/leads";
+const URL = "http://13.233.26.160:3002/enquiries";
 
 const EnquiryScreen = ({navigation}) => {
   const tableHead = ['#', 'ID', 'Name', 'Phone'];
@@ -19,6 +19,7 @@ const EnquiryScreen = ({navigation}) => {
       axios.get(URL)
         .then(response => {
           if (response.status !== 401) {
+            console.log("response.data",response.data)
             setTableData(response.data);
             setData(response.data);
           } else {
@@ -63,11 +64,11 @@ const EnquiryScreen = ({navigation}) => {
 
         <TextInput
           style={styles.searchInput}
-          placeholder="Search..."
+          placeholder="Search1..."
           value={searchQuery}
           onChangeText={(text) => handleSearchChange(text)}
         />
-        <Text style={styles.header}>Customer Table</Text>
+        {/* <Text style={styles.header}>Customer Table</Text> */}
       </View>
       {/* Add your table component here */}
     </View>
@@ -100,9 +101,9 @@ const EnquiryScreen = ({navigation}) => {
                   <Text style={styles.cell}>Person To Contact: {rowData.personToContact}</Text>
                   <Text style={styles.cell}>Person To Contact Phone: {rowData.personToContactPhone}</Text>
                   <Button
-        title="Go to Contract"
-        onPress={() => navigation.navigate('Contracts')}
-      />
+                    title="Move to Contract"
+                    onPress={() => navigation.navigate('Contracts')}
+                  />
                 </View>
               )}
             </React.Fragment>
