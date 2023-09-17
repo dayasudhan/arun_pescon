@@ -3,7 +3,7 @@ import { Table, Row } from 'react-native-table-component';
 import {Button, View, Text, StyleSheet, SafeAreaView,TouchableOpacity, ScrollView,TextInput } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
-
+import { useIsFocused } from '@react-navigation/native';
 const URL = "http://13.233.26.160:3002/contracts";
 
 const ContractScreen = ({navigation}) => {
@@ -14,8 +14,9 @@ const ContractScreen = ({navigation}) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchKey, setSearchKey] = useState('name'); // Set your initial search key here
   const searchOptions = ['name', 'id', 'city', 'phone'];
+  const isFocused = useIsFocused();
   useEffect(() => {
-    if (tableData.length === 0) {
+    if (tableData.length === 0 || isFocused) {
       axios.get(URL)
         .then(response => {
           if (response.status !== 401) {
@@ -31,7 +32,7 @@ const ContractScreen = ({navigation}) => {
           console.log(error);
         });
     }
-  }, []);
+  }, [isFocused]);
   const handleSearchChange = (text) => {
     setSearchQuery(text);
     const filteredResults = data.filter((item) =>

@@ -5,7 +5,7 @@ import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
 
 const URL = "http://13.233.26.160:3002/enquiries";
-
+const CONTRACT_URL = "http://13.233.26.160:3002/leads";
 const EnquiryScreen = ({navigation}) => {
   const tableHead = ['#', 'ID', 'Name', 'Phone'];
   const [tableData, setTableData] = useState([]);
@@ -48,7 +48,19 @@ const EnquiryScreen = ({navigation}) => {
   const handleRowClick = (index) => {
     setExpandedRowIndex((prevIndex) => (prevIndex === index ? null : index));
   };
-
+  const handleContractSubmit = (id) => {
+    const url = CONTRACT_URL + '/' +id;
+    axios.patch(url, { 'contract': true })
+      .then((response) => {
+        console.log('PATCH successful:', response.data);
+        // Handle success or update your UI
+        navigation.navigate('Contracts')
+      })
+      .catch((error) => {
+        console.error('PATCH error:', error);
+        // Handle errors or display error messages
+      });
+  };
   return (
     <SafeAreaView style={styles.container}>
          <View>
@@ -102,7 +114,7 @@ const EnquiryScreen = ({navigation}) => {
                   <Text style={styles.cell}>Person To Contact Phone: {rowData.personToContactPhone}</Text>
                   <Button
                     title="Move to Contract"
-                    onPress={() => navigation.navigate('Contracts')}
+                    onPress={() => handleContractSubmit(rowData._id)}
                   />
                 </View>
               )}
