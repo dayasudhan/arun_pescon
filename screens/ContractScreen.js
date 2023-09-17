@@ -104,7 +104,7 @@ const ContractScreen = ({navigation}) => {
                   <Text style={styles.cell}>Person To Contact Phone: {rowData.personToContactPhone}</Text>
                   {rowData.serviceHistory && <Text style={styles.cell}>Service History</Text>}
                   {
-                    rowData.serviceHistory && rowData.serviceHistory.map((e,i)=>{
+                    rowData.serviceHistory && Array.isArray(rowData.serviceHistory) && rowData.serviceHistory.map((e,i)=>{
                        const entries = Object.entries(e);
                        <Text style={styles.cell}>Service History </Text>
                         const ar = []
