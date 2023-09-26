@@ -18,6 +18,10 @@ function HomeScreen({ navigation }) {
         title="Go to Contracts"
         onPress={() => navigation.navigate('Contracts')}
       />
+              <Button
+        title="Go to Individual"
+        onPress={() => navigation.navigate('Individual')}
+      />
     </View>
   );
 }

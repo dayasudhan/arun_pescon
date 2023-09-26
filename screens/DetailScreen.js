@@ -4,12 +4,13 @@ import {Button, View, Text, StyleSheet, SafeAreaView,TouchableOpacity, ScrollVie
 import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
 
-const URL = "http://13.233.26.160:3002/leads";
+const URL = "http://13.233.26.160:3002/leads/64fc4c8e75cbefda670bffc4";
 
-const ContractScreen = ({navigation}) => {
+const DetailScreen = ({navigation}) => {
   const tableHead = ['#', 'ID', 'Name', 'Phone'];
   const [tableData, setTableData] = useState([]);
   const [data, setData] = useState([]);
+  const [serviceHistory, setServiceHistory] = useState([{"key": "date", "value": "1-2-2023"}, {"key": "task", "value": "Notes 123"}, {"key": "description", "value": "Need to update the pesticide"}]);
   const [expandedRowIndex, setExpandedRowIndex] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchKey, setSearchKey] = useState('name'); // Set your initial search key here
@@ -21,6 +22,16 @@ const ContractScreen = ({navigation}) => {
           if (response.status !== 401) {
             setTableData(response.data);
             setData(response.data);
+           
+            // if(response.data.serviceHistory)
+            {
+            const sh = Object.keys(response.data.serviceHistory).map((key) => ({
+                key: key,
+                value: response.data.serviceHistory[key],
+              }));
+             setServiceHistory(sh) 
+             console.log(sh)
+            }
           } else {
             setTableData([]);
             setData(response.data);
@@ -50,9 +61,9 @@ const ContractScreen = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-         <View>
+         {/* <View>
       <View style={styles.segment}>
-        {/* <Text style={styles.label}>Search Box</Text> */}
+       
         <Picker
           selectedValue={searchKey}
           onValueChange={(itemValue) => handleDropdownChange(itemValue)}>
@@ -67,65 +78,49 @@ const ContractScreen = ({navigation}) => {
           value={searchQuery}
           onChangeText={(text) => handleSearchChange(text)}
         />
-        <Text style={styles.header}>Customer Table</Text>
+       
       </View>
-      {/* Add your table component here */}
-    </View>
-      <Table borderStyle={{ borderWidth: 2, borderColor: '#c8e1ff' }}>
-        <Row data={tableHead} style={styles.head} textStyle={styles.headText} />
+     
+    </View> */}
+     
+    
         <ScrollView style={styles.scrollView}>
-          {tableData.map((rowData, rowIndex) => (
-            <React.Fragment key={rowIndex}>
-              <TouchableOpacity onPress={() => handleRowClick(rowIndex)}>
-                <Row
-                  data={[
-                    rowIndex + 1,
-                    'P' + rowIndex,
-                    rowData.name,
-                    rowData.phone
-                  ]}
-                  style={[
-                    styles.row,
-                    expandedRowIndex === rowIndex && styles.expandedRow,
-                  ]}
-                  textStyle={styles.rowText}
-                />
-              </TouchableOpacity>
-              {expandedRowIndex === rowIndex && (
-                 <ScrollView style={styles.scrollView}>
-                <View style={styles.expandedContent}>
-                  <Text style={styles.cell}>Name: {rowData.name}</Text>
-                  <Text style={styles.cell}>Phone: {rowData.phone}</Text>
-                  <Text style={styles.cell}>Address: {rowData.address}</Text>
-                  <Text style={styles.cell}>City: {rowData.city}</Text>
-                  <Text style={styles.cell}>Person To Contact: {rowData.personToContact}</Text>
-                  <Text style={styles.cell}>Person To Contact Phone: {rowData.personToContactPhone}</Text>
-                  {rowData.serviceHistory && <Text style={styles.cell}>Service History</Text>}
-                  {
-                    rowData.serviceHistory && Array.isArray(rowData.serviceHistory) && rowData.serviceHistory.map((e,i)=>{
-                       const entries = Object.entries(e);
-                       <Text style={styles.cell}>Service History </Text>
-                        const ar = []
-                        ar.push(<Text style={styles.cell}>{i+1} : </Text>)
-                       entries.map(f=>
-                         ar.push(<Text style={styles.cell}>       {f[0]} : {f[1]}</Text>)
-                      )
-                      
-                     return ar;
-                    })
-                  }
-                  {/* <Button
-        title="Future Use"
-        //onPress={() => navigation.navigate('Contracts')}
-      /> */}
-      
-                </View>
+       
+   
+            <View style={styles.expandedContent}>
+                <Text style={styles.cell}>Id: {tableData.id}</Text>
+                <Text style={styles.cell}>Name: {tableData.name}</Text>
+                <Text style={styles.cell}>Phone: {tableData.phone}</Text>
+                <Text style={styles.cell}>Address: {tableData.address}</Text>
+                <Text style={styles.cell}>City: {tableData.city}</Text>
+                <Text style={styles.cell}>Person To Contact: {tableData.personToContact}</Text>
+                <Text style={styles.cell}>Person To Contact Phone: {tableData.personToContactPhone}</Text>
+                <Text style={styles.cell}>serviceBeginDate: {tableData.serviceBeginDate}</Text>
+                <Text style={styles.cell}>serviceExpirationDate: {tableData.serviceExpirationDate}</Text>
+                <Text style={styles.cell}>pestsToControl: {tableData.pestsToControl}</Text>
+                <Text style={styles.cell}>serviceFrequency: {tableData.serviceFrequency}</Text>
+                <Text style={styles.cell}>propertyType: {tableData.propertyType}</Text>
+                <Text style={styles.cell}>reneval: {tableData.reneval}</Text>
+                <Text style={styles.cell}>paymentTerms: {tableData.paymentTerms}</Text>
+                <Text style={styles.cell}>billingInstructions: {tableData.billingInstructions}</Text>
+                <Text style={styles.cell}>Reneval: {tableData.Reneval}</Text>
+                
+                <ScrollView style={styles.scrollView}>
+                {serviceHistory.map((e, i) => (
+                    <React.Fragment key={i}>
+                    <Text>{e.key}: {e.value}</Text>
+                    </React.Fragment>
+                ))}
                 </ScrollView>
-              )}
-            </React.Fragment>
-          ))}
-        </ScrollView>
-      </Table>
+             
+                  <Button
+                    title="Insert into google calendar"
+                    onPress={() => navigation.navigate('Contracts')}
+                  />
+
+                </View>
+         </ScrollView>
+     
     </SafeAreaView>
   );
 };
@@ -142,4 +137,4 @@ const styles = StyleSheet.create({
 });
 
 
-export default ContractScreen;
+export default DetailScreen;
