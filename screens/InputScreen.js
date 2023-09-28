@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button,  TouchableOpacity,StyleSheet,SafeAreaView,Switch } from 'react-native';
+import { View, Text, TextInput, Button,  TouchableOpacity,StyleSheet,SafeAreaView,Switch,Modal } from 'react-native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { StatusBar } from "expo-status-bar";
@@ -8,14 +8,36 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { validationSchema } from "./../utils/validation";
 import { styles } from "./../utils/styles";
 import { RadioButton } from 'react-native-paper';
-
+import axios from 'axios';
+const URL = "http://13.233.26.160:3002/leads";
+const URL2 = "http://192.168.1.100:3002/leads"
 const InputScreen = () => {
-
+  const [showModal, setShowModal] = useState(false);
+  const [responseText, setResponseText] = useState('');
   const [isEnabled, setIsEnabled] = useState(false);
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
   const onSubmitHandler = (values) => {
     console.log('Login123 form values:', values);
+    axios.post(URL2, values)
+    .then(response => {
+      console.log("response1",response);
+      console.log("response2",response?.data?.insertedId);
+      setTimeout(() => {
+        setResponseText(`Customer Inserted Successfully With Id : ${response?.data?.insertedId}`); // Set the response text to be shown in the modal
+        setShowModal(true); // Show the modal
+      }, 1000); // Delay of 1 second
+    })
+    .catch(error => {
+      console.error("error",error);
+    });
+  };
+  const closeModal = () => {
+    setShowModal(false);
+    // location.reload();
+  };
+  const openModal = () => {
+    setShowModal(true);
   };
   const [propertyType, setPropertyType] = useState('Commercial');
   const [serviceFrequency, setServiceFrequency] = useState('Monthly');
@@ -26,9 +48,7 @@ const InputScreen = () => {
     <StatusBar style="light" />
 
     <SafeAreaView style={styles.container}>
-      {/* <View style={styles.header}>
-        <Text style={styles.headerText}>Register</Text>
-      </View> */}
+
       <Formik
         initialValues={{
           name: "netra213",
@@ -120,8 +140,8 @@ const InputScreen = () => {
                   style={styles.input}
                   value={values.personToContactPhone}
                   placeholder="Contact Phone.."
-                  onChangeText={handleChange("name")}
-                  onBlur={handleBlur("name")}
+                  onChangeText={handleChange("personToContactPhone")}
+                  onBlur={handleBlur("personToContactPhone")}
                 />
               </View>
               <View style={styles.formGroup}>
@@ -222,8 +242,8 @@ const InputScreen = () => {
                   style={styles.input}
                   value={values.pestsToControl}
                   placeholder="Pests to be controlled.."
-                  onChangeText={handleChange("name")}
-                  onBlur={handleBlur("name")}
+                  onChangeText={handleChange("pestsToControl")}
+                  onBlur={handleBlur("pestsToControl")}
                 />
 
                 {/* <ErrorMessage
@@ -270,10 +290,22 @@ const InputScreen = () => {
             <Text style={styles.buttonText}>SUBMIT</Text>
           </TouchableOpacity>
           </KeyboardAwareScrollView>
+          
         )}
       </Formik>
-
-    
+       {/* <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}> */}
+      <Modal   animationType="slide"
+        transparent={false}
+        visible={showModal}
+        onRequestClose={closeModal}>
+         <View style={{ flex: 1, justifyContent: 'center' }}>
+         <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10 }}>
+         <Text>{responseText}</Text>
+         <Button title="Close" onPress={closeModal} />
+         </View>
+         </View>
+      </Modal>
+      
     </SafeAreaView>
     </>
   );

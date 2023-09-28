@@ -1,22 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Row } from 'react-native-table-component';
-import {Button, View, Text, StyleSheet, SafeAreaView,TouchableOpacity, ScrollView,TextInput } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
+import {Button, View, Text, StyleSheet, SafeAreaView, ScrollView,TextInput,Modal } from 'react-native';
 import axios from 'axios';
 
-const URL = "http://13.233.26.160:3002/leads/64fc4c8e75cbefda670bffc4";
+const URL = "http://13.233.26.160:3002/leads/64c0c5f8ec9a97c3650aa01c";
+const SERVICE_HISTORY_URL = "http://13.233.26.160:3002/leads/servicehistory/64c0c5f8ec9a97c3650aa01c";
 
 const DetailScreen = ({navigation}) => {
-  const tableHead = ['#', 'ID', 'Name', 'Phone'];
   const [tableData, setTableData] = useState([]);
   const [data, setData] = useState([]);
-  const [serviceHistory, setServiceHistory] = useState([{"key": "date", "value": "1-2-2023"}, {"key": "task", "value": "Notes 123"}, {"key": "description", "value": "Need to update the pesticide"}]);
-  const [expandedRowIndex, setExpandedRowIndex] = useState(null);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchKey, setSearchKey] = useState('name'); // Set your initial search key here
-  const searchOptions = ['name', 'id', 'city', 'phone'];
+  const [serviceHistory, setServiceHistory] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [heading, setHeading] = useState('');
+  const [description, setDescription] = useState('');
   useEffect(() => {
-    if (tableData.length === 0) {
+   // if (tableData.length === 0) {
       axios.get(URL)
         .then(response => {
           if (response.status !== 401) {
@@ -25,13 +22,18 @@ const DetailScreen = ({navigation}) => {
            
             // if(response.data.serviceHistory)
             {
-            const sh = Object.keys(response.data.serviceHistory).map((key) => ({
+              const sh2 = []
+              response.data.serviceHistory.map(e=>{
+            const sh = Object.keys(e).map((key) => ({
                 key: key,
-                value: response.data.serviceHistory[key],
+                value: e[key],
               }));
-             setServiceHistory(sh) 
-             console.log(sh)
-            }
+                         console.log("sh",sh)
+                         sh2.push(sh)
+            })
+            console.log("sh2",sh2)
+            setServiceHistory(sh2) 
+          }
           } else {
             setTableData([]);
             setData(response.data);
@@ -40,53 +42,37 @@ const DetailScreen = ({navigation}) => {
         .catch(error => {
           console.log(error);
         });
-    }
+    
   }, []);
-  const handleSearchChange = (text) => {
-    setSearchQuery(text);
-    const filteredResults = data.filter((item) =>
-     item?.[searchKey]?.toLowerCase().includes(text.toLowerCase())
-   );
-      setTableData(filteredResults)
-    // Implement your search logic here
+
+
+
+  const openModal = () => {
+    setModalVisible(true);
   };
 
-  const handleDropdownChange = (itemValue) => {
-    setSearchKey(itemValue);
-    // Implement your logic for handling dropdown change
+  const closeModal = () => {
+    setModalVisible(false);
   };
-  const handleRowClick = (index) => {
-    setExpandedRowIndex((prevIndex) => (prevIndex === index ? null : index));
+  const  handleSubmit = async () => {
+    // Handle the submission of heading and description here
+    console.log('Heading:', heading);
+    console.log('Description:', description);
+    const values = {
+      "serviceHistory":
+      {
+          "Task":heading,
+          "Description":description
+      }
   };
-
+    const response = await axios.patch(SERVICE_HISTORY_URL, values);
+    console.log("response",response)
+    closeModal();
+  };
   return (
     <SafeAreaView style={styles.container}>
-         {/* <View>
-      <View style={styles.segment}>
-       
-        <Picker
-          selectedValue={searchKey}
-          onValueChange={(itemValue) => handleDropdownChange(itemValue)}>
-          {searchOptions.map((option) => (
-            <Picker.Item key={option} label={option} value={option} />
-          ))}
-        </Picker>
-
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search..."
-          value={searchQuery}
-          onChangeText={(text) => handleSearchChange(text)}
-        />
-       
-      </View>
-     
-    </View> */}
-     
-    
         <ScrollView style={styles.scrollView}>
-       
-   
+         
             <View style={styles.expandedContent}>
                 <Text style={styles.cell}>Id: {tableData.id}</Text>
                 <Text style={styles.cell}>Name: {tableData.name}</Text>
@@ -104,21 +90,62 @@ const DetailScreen = ({navigation}) => {
                 <Text style={styles.cell}>paymentTerms: {tableData.paymentTerms}</Text>
                 <Text style={styles.cell}>billingInstructions: {tableData.billingInstructions}</Text>
                 <Text style={styles.cell}>Reneval: {tableData.Reneval}</Text>
-                
+                <Text style={styles.cell}>Service History:</Text>
                 <ScrollView style={styles.scrollView}>
                 {serviceHistory.map((e, i) => (
-                    <React.Fragment key={i}>
-                    <Text>{e.key}: {e.value}</Text>
+                  <View style={styles.segment}>
+                    <Text>{i+1}:-</Text>
+                    {Array.isArray(e) && e.map((e1, i1) => (
+                    <React.Fragment key={i1}>
+                      <Text>   {e1.key}: {e1.value}</Text>
                     </React.Fragment>
+                    ))}
+                    </View>
                 ))}
                 </ScrollView>
-             
-                  <Button
-                    title="Insert into google calendar"
-                    onPress={() => navigation.navigate('Contracts')}
-                  />
+                <View style={styles.buttonContainer}>
 
-                </View>
+            <Button title="Enter Service History" onPress={openModal} />
+          </View>
+                  
+                  {/* <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}> */}
+      
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={closeModal}
+      >
+        <View style={{ flex: 1, justifyContent: 'center' }}>
+          <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10 }}>
+            <Text>Enter Details</Text>
+
+            <TextInput
+              placeholder="Task"
+              value={heading}
+              onChangeText={(text) => setHeading(text)}
+              style={{ borderBottomWidth: 1, marginBottom: 10 }}
+            />
+
+            <TextInput
+              placeholder="Description"
+              value={description}
+              onChangeText={(text) => setDescription(text)}
+              multiline
+              style={{ borderBottomWidth: 1, marginBottom: 20 }}
+            />
+<View style={styles.buttonContainer}>
+            <Button title="Submit" onPress={handleSubmit} />
+            <Button title="Close" onPress={closeModal} />
+          </View>
+         
+          </View>
+        </View>
+      </Modal>
+    </View>
+
+                {/* </View> */}
          </ScrollView>
      
     </SafeAreaView>
@@ -134,6 +161,11 @@ const styles = StyleSheet.create({
   expandedRow: { backgroundColor: '#e3f1fc' },
   expandedContent: { backgroundColor: '#f2f2f2', padding: 10 },
   cell: { marginBottom: 5 },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
 });
 
 
