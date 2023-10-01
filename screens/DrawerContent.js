@@ -6,10 +6,7 @@ function DrawerContent({ navigation }) {
     <View>
       <Text>Pescon</Text>
       <Image
-        // source={require('./../assets/splash.png')} // Local image
-        // OR
-        // source={{ uri: 'https://example.com/your-image.jpg' }} // Remote image
-        // style={styles.image}
+         source={require('./../assets/logo.jpg')} // Local image
       />
       <Button
         title="Home"
@@ -23,10 +20,6 @@ function DrawerContent({ navigation }) {
        <Button
         title="Contracts"
         onPress={() => navigation.navigate('Contracts')}
-      />
-      <Button
-        title="Register"
-        onPress={() => navigation.navigate('Register')}
       />
     <Button
         title="Input"

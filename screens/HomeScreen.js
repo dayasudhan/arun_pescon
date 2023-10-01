@@ -5,22 +5,22 @@ import { View, Text, Button } from 'react-native';
 function HomeScreen({ navigation }) {
   return (
     <View>
-      <Text>Home Screen</Text>
-      <Button
-        title="Go to Enquiries"
-        onPress={() => navigation.navigate('Enquiries')}
-      />
-      <Button
-        title="Go to Input"
+     <Button
+        title="New Enquiry"
         onPress={() => navigation.navigate('Input')}
       />
-            <Button
-        title="Go to Contracts"
+      <Button
+        title="Enquiries"
+        onPress={() => navigation.navigate('Enquiries')}
+      />
+      
+      <Button
+        title="Contracts"
         onPress={() => navigation.navigate('Contracts')}
       />
-              <Button
-        title="Go to Individual"
-        onPress={() => navigation.navigate('Individual')}
+      <Button
+        title="Details"
+        onPress={() => navigation.navigate('Detail')}
       />
     </View>
   );

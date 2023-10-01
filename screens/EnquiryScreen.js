@@ -42,7 +42,6 @@ const EnquiryScreen = ({navigation}) => {
 
   const handleDropdownChange = (itemValue) => {
     setSearchKey(itemValue);
-    // Implement your logic for handling dropdown change
   };
   const handleRowClick = (index) => {
     setExpandedRowIndex((prevIndex) => (prevIndex === index ? null : index));
@@ -100,9 +99,9 @@ const EnquiryScreen = ({navigation}) => {
                   <Text style={styles.cell}>Person To Contact: {rowData.personToContact}</Text>
                   <Text style={styles.cell}>Person To Contact Phone: {rowData.personToContactPhone}</Text>
                   <Button
-        title="Go to Contract"
-        onPress={() => navigation.navigate('Contracts')}
-      />
+                    title="Go to Contract"
+                    onPress={() => navigation.navigate('Contracts')}
+                  />
                 </View>
               )}
             </React.Fragment>

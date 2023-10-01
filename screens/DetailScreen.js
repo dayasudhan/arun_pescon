@@ -2,48 +2,45 @@ import React, { useState, useEffect } from 'react';
 import {Button, View, Text, StyleSheet, SafeAreaView, ScrollView,TextInput,Modal } from 'react-native';
 import axios from 'axios';
 
-const URL = "http://13.233.26.160:3002/leads/64c0c5f8ec9a97c3650aa01c";
-const SERVICE_HISTORY_URL = "http://13.233.26.160:3002/leads/servicehistory/64c0c5f8ec9a97c3650aa01c";
 
-const DetailScreen = ({navigation}) => {
-  const [tableData, setTableData] = useState([]);
+
+const DetailScreen = ({route}) => {
   const [data, setData] = useState([]);
   const [serviceHistory, setServiceHistory] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [heading, setHeading] = useState('');
   const [description, setDescription] = useState('');
+  const id = route.params ? route.params.data : null;
+  const URL = "http://13.233.26.160:3002/leads/" + id;
+  const SERVICE_HISTORY_URL = "http://13.233.26.160:3002/leads/servicehistory/" + id;
   useEffect(() => {
-   // if (tableData.length === 0) {
+   console.log("inside useeffect 1")
       axios.get(URL)
         .then(response => {
           if (response.status !== 401) {
-            setTableData(response.data);
-            setData(response.data);
            
-            // if(response.data.serviceHistory)
-            {
-              const sh2 = []
-              response.data.serviceHistory.map(e=>{
-            const sh = Object.keys(e).map((key) => ({
-                key: key,
-                value: e[key],
-              }));
-                         console.log("sh",sh)
-                         sh2.push(sh)
+            setData(response.data);
+            const sh2 = []
+            response.data.serviceHistory.map(e=>{
+                const sh = Object.keys(e).map((key) => ({
+                  key: key,
+                  value: e[key],
+                }));
+                console.log("sh",sh)
+                sh2.push(sh)
             })
             console.log("sh2",sh2)
             setServiceHistory(sh2) 
-          }
+          
           } else {
-            setTableData([]);
-            setData(response.data);
+            setData([]);
           }
         })
         .catch(error => {
           console.log(error);
         });
     
-  }, []);
+  }, [id]);
 
 
 
@@ -74,22 +71,22 @@ const DetailScreen = ({navigation}) => {
         <ScrollView style={styles.scrollView}>
          
             <View style={styles.expandedContent}>
-                <Text style={styles.cell}>Id: {tableData.id}</Text>
-                <Text style={styles.cell}>Name: {tableData.name}</Text>
-                <Text style={styles.cell}>Phone: {tableData.phone}</Text>
-                <Text style={styles.cell}>Address: {tableData.address}</Text>
-                <Text style={styles.cell}>City: {tableData.city}</Text>
-                <Text style={styles.cell}>Person To Contact: {tableData.personToContact}</Text>
-                <Text style={styles.cell}>Person To Contact Phone: {tableData.personToContactPhone}</Text>
-                <Text style={styles.cell}>serviceBeginDate: {tableData.serviceBeginDate}</Text>
-                <Text style={styles.cell}>serviceExpirationDate: {tableData.serviceExpirationDate}</Text>
-                <Text style={styles.cell}>pestsToControl: {tableData.pestsToControl}</Text>
-                <Text style={styles.cell}>serviceFrequency: {tableData.serviceFrequency}</Text>
-                <Text style={styles.cell}>propertyType: {tableData.propertyType}</Text>
-                <Text style={styles.cell}>reneval: {tableData.reneval}</Text>
-                <Text style={styles.cell}>paymentTerms: {tableData.paymentTerms}</Text>
-                <Text style={styles.cell}>billingInstructions: {tableData.billingInstructions}</Text>
-                <Text style={styles.cell}>Reneval: {tableData.Reneval}</Text>
+                <Text style={styles.cell}>Id: {data.id}</Text>
+                <Text style={styles.cell}>Name: {data.name}</Text>
+                <Text style={styles.cell}>Phone: {data.phone}</Text>
+                <Text style={styles.cell}>Address: {data.address}</Text>
+                <Text style={styles.cell}>City: {data.city}</Text>
+                <Text style={styles.cell}>Person To Contact: {data.personToContact}</Text>
+                <Text style={styles.cell}>Person To Contact Phone: {data.personToContactPhone}</Text>
+                <Text style={styles.cell}>serviceBeginDate: {data.serviceBeginDate}</Text>
+                <Text style={styles.cell}>serviceExpirationDate: {data.serviceExpirationDate}</Text>
+                <Text style={styles.cell}>pestsToControl: {data.pestsToControl}</Text>
+                <Text style={styles.cell}>serviceFrequency: {data.serviceFrequency}</Text>
+                <Text style={styles.cell}>propertyType: {data.propertyType}</Text>
+                <Text style={styles.cell}>reneval: {data.reneval}</Text>
+                <Text style={styles.cell}>paymentTerms: {data.paymentTerms}</Text>
+                <Text style={styles.cell}>billingInstructions: {data.billingInstructions}</Text>
+                <Text style={styles.cell}>Reneval: {data.Reneval}</Text>
                 <Text style={styles.cell}>Service History:</Text>
                 <ScrollView style={styles.scrollView}>
                 {serviceHistory.map((e, i) => (
@@ -107,10 +104,6 @@ const DetailScreen = ({navigation}) => {
 
             <Button title="Enter Service History" onPress={openModal} />
           </View>
-                  
-                  {/* <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}> */}
-      
-
       <Modal
         animationType="slide"
         transparent={true}
@@ -135,7 +128,7 @@ const DetailScreen = ({navigation}) => {
               multiline
               style={{ borderBottomWidth: 1, marginBottom: 20 }}
             />
-<View style={styles.buttonContainer}>
+          <View style={styles.buttonContainer}>
             <Button title="Submit" onPress={handleSubmit} />
             <Button title="Close" onPress={closeModal} />
           </View>

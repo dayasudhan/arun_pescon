@@ -9,7 +9,6 @@ import EnquiryScreen from './screens/EnquiryScreen';
 import DrawerContent from './screens/DrawerContent';
 
 import ContractScreen from './screens/ContractScreen';
-import RegisterForm from './screens/RegisterForm';
 import InputScreen from './screens/InputScreen';
 import DetailScreen from './screens/DetailScreen';
 const Drawer = createDrawerNavigator();
@@ -21,9 +20,8 @@ function App() {
         <Drawer.Screen name="Home" component={HomeScreen} />
         <Drawer.Screen name="Enquiries" component={EnquiryScreen} />
         <Drawer.Screen name="Contracts" component={ContractScreen} />
-        <Drawer.Screen name="Register" component={RegisterForm} />
         <Drawer.Screen name="Input" component={InputScreen} />
-        <Drawer.Screen name="Individual" component={DetailScreen} />
+        <Drawer.Screen name="Details" component={DetailScreen} />
       </Drawer.Navigator>
     </NavigationContainer>
   );

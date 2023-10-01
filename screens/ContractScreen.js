@@ -114,10 +114,10 @@ const ContractScreen = ({navigation}) => {
                      return ar;
                     })
                   }
-                  {/* <Button
-        title="Future Use"
-        //onPress={() => navigation.navigate('Contracts')}
-      /> */}
+                  <Button
+                      title="Detail"
+                      onPress={() => navigation.navigate('Individual',{ data: rowData._id,})}
+                  />
       
                 </View>
                 </ScrollView>
