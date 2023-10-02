@@ -4,7 +4,9 @@ import {Button, View, Text, StyleSheet, SafeAreaView,TouchableOpacity, ScrollVie
 import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
 
-const URL = "http://13.233.26.160:3002/contracts";
+import BASE_URL from './../utils/utils' 
+const URL = BASE_URL + "contracts";
+
 
 const ContractScreen = ({navigation}) => {
   const tableHead = ['#', 'ID', 'Name', 'Phone'];
@@ -15,7 +17,7 @@ const ContractScreen = ({navigation}) => {
   const [searchKey, setSearchKey] = useState('name'); // Set your initial search key here
   const searchOptions = ['name', 'id', 'city', 'phone'];
   useEffect(() => {
-    if (tableData.length === 0) {
+      console.log("inside contract screen useffect")
       axios.get(URL)
         .then(response => {
           if (response.status !== 401) {
@@ -29,7 +31,7 @@ const ContractScreen = ({navigation}) => {
         .catch(error => {
           console.log(error);
         });
-    }
+    
   }, []);
   const handleSearchChange = (text) => {
     setSearchQuery(text);
@@ -71,9 +73,10 @@ const ContractScreen = ({navigation}) => {
       </View>
       {/* Add your table component here */}
     </View>
+    <ScrollView style={styles.scrollView}>
       <Table borderStyle={{ borderWidth: 2, borderColor: '#c8e1ff' }}>
         <Row data={tableHead} style={styles.head} textStyle={styles.headText} />
-        <ScrollView style={styles.scrollView}>
+        
           {tableData.map((rowData, rowIndex) => (
             <React.Fragment key={rowIndex}>
               <TouchableOpacity onPress={() => handleRowClick(rowIndex)}>
@@ -116,7 +119,7 @@ const ContractScreen = ({navigation}) => {
                   }
                   <Button
                       title="Detail"
-                      onPress={() => navigation.navigate('Individual',{ data: rowData._id,})}
+                      onPress={() => navigation.navigate('Detail',{ data: rowData._id,})}
                   />
       
                 </View>
@@ -124,8 +127,9 @@ const ContractScreen = ({navigation}) => {
               )}
             </React.Fragment>
           ))}
-        </ScrollView>
+       
       </Table>
+      </ScrollView>
     </SafeAreaView>
   );
 };

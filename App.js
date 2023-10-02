@@ -21,7 +21,7 @@ function App() {
         <Drawer.Screen name="Enquiries" component={EnquiryScreen} />
         <Drawer.Screen name="Contracts" component={ContractScreen} />
         <Drawer.Screen name="Input" component={InputScreen} />
-        <Drawer.Screen name="Details" component={DetailScreen} />
+        <Drawer.Screen name="Detail" component={DetailScreen} />
       </Drawer.Navigator>
     </NavigationContainer>
   );

@@ -26,8 +26,8 @@ function DrawerContent({ navigation }) {
         onPress={() => navigation.navigate('Input')}
       />
     <Button
-        title="Individual"
-        onPress={() => navigation.navigate('Individual')}
+        title="Detail"
+        onPress={() => navigation.navigate('Detail')}
       />
     </View>
     

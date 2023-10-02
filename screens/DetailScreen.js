@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {Button, View, Text, StyleSheet, SafeAreaView, ScrollView,TextInput,Modal } from 'react-native';
 import axios from 'axios';
+import BASE_URL from './../utils/utils' 
 
 
 
@@ -11,11 +12,16 @@ const DetailScreen = ({route}) => {
   const [heading, setHeading] = useState('');
   const [description, setDescription] = useState('');
   const id = route.params ? route.params.data : null;
-  const URL = "http://13.233.26.160:3002/leads/" + id;
-  const SERVICE_HISTORY_URL = "http://13.233.26.160:3002/leads/servicehistory/" + id;
+  const URL = BASE_URL + "leads/" + id;
+  const SERVICE_HISTORY_URL = BASE_URL + "leads/servicehistory/" + id;
   useEffect(() => {
    console.log("inside useeffect 1")
-      axios.get(URL)
+     
+    fetchData();
+  }, [id]);
+
+  const fetchData = () => {
+    axios.get(URL)
         .then(response => {
           if (response.status !== 401) {
            
@@ -39,10 +45,7 @@ const DetailScreen = ({route}) => {
         .catch(error => {
           console.log(error);
         });
-    
-  }, [id]);
-
-
+  }
 
   const openModal = () => {
     setModalVisible(true);
@@ -63,13 +66,15 @@ const DetailScreen = ({route}) => {
       }
   };
     const response = await axios.patch(SERVICE_HISTORY_URL, values);
-    console.log("response",response)
+    console.log("response",response.status);
+    setHeading('');
+    setDescription('');
     closeModal();
+    fetchData();
   };
   return (
     <SafeAreaView style={styles.container}>
         <ScrollView style={styles.scrollView}>
-         
             <View style={styles.expandedContent}>
                 <Text style={styles.cell}>Id: {data.id}</Text>
                 <Text style={styles.cell}>Name: {data.name}</Text>
@@ -89,7 +94,7 @@ const DetailScreen = ({route}) => {
                 <Text style={styles.cell}>Reneval: {data.Reneval}</Text>
                 <Text style={styles.cell}>Service History:</Text>
                 <ScrollView style={styles.scrollView}>
-                {serviceHistory.map((e, i) => (
+                {serviceHistory && serviceHistory.map((e, i) => (
                   <View style={styles.segment}>
                     <Text>{i+1}:-</Text>
                     {Array.isArray(e) && e.map((e1, i1) => (

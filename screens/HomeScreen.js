@@ -19,7 +19,7 @@ function HomeScreen({ navigation }) {
         onPress={() => navigation.navigate('Contracts')}
       />
       <Button
-        title="Details"
+        title="Detail"
         onPress={() => navigation.navigate('Detail')}
       />
     </View>

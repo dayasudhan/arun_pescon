@@ -3,8 +3,9 @@ import { Table, Row } from 'react-native-table-component';
 import {Button, View, Text, StyleSheet, SafeAreaView,TouchableOpacity, ScrollView,TextInput } from 'react-native';
 import { Picker  } from '@react-native-picker/picker';
 import axios from 'axios';
-
-const URL = "http://13.233.26.160:3002/enquiries";
+import BASE_URL from './../utils/utils' 
+const URL = BASE_URL + "enquiries";
+const LEADS_URL = BASE_URL + "leads/";
 
 const EnquiryScreen = ({navigation}) => {
   const tableHead = ['#', 'ID', 'Name', 'Phone'];
@@ -15,30 +16,30 @@ const EnquiryScreen = ({navigation}) => {
   const [searchKey, setSearchKey] = useState('name'); // Set your initial search key here
   const searchOptions = ['name', 'id', 'city', 'phone'];
   useEffect(() => {
-    if (tableData.length === 0) {
-      axios.get(URL)
-        .then(response => {
-          if (response.status !== 401) {
-            setTableData(response.data);
-            setData(response.data);
-          } else {
-            setTableData([]);
-            setData(response.data);
-          }
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    }
+    fetchData();
   }, []);
+  const fetchData = () => {
+    axios.get(URL)
+    .then(response => {
+      if (response.status !== 401) {
+        setTableData(response.data);
+        setData(response.data);
+      } else {
+        setTableData([]);
+        setData(response.data);
+      }
+    })
+    .catch(error => {
+      console.log(error);
+    });
+  }
   const handleSearchChange = (text) => {
     setSearchQuery(text);
     const filteredResults = data.filter((item) =>
      item?.[searchKey]?.toLowerCase().includes(text.toLowerCase())
    );
-      setTableData(filteredResults)
-    // Implement your search logic here
-  };
+    setTableData(filteredResults)
+   };
 
   const handleDropdownChange = (itemValue) => {
     setSearchKey(itemValue);
@@ -46,7 +47,14 @@ const EnquiryScreen = ({navigation}) => {
   const handleRowClick = (index) => {
     setExpandedRowIndex((prevIndex) => (prevIndex === index ? null : index));
   };
-
+  const handleSubmit = async (data) => {
+    console.log('data:', data);
+    const values = {"contract" : true };
+    const response = await axios.patch(LEADS_URL + data._id, values);
+    console.log("response",response.status)
+    fetchData();
+    navigation.navigate('Contracts')
+  };
   return (
     <SafeAreaView style={styles.container}>
          <View>
@@ -70,9 +78,9 @@ const EnquiryScreen = ({navigation}) => {
       </View>
       {/* Add your table component here */}
     </View>
+    <ScrollView style={styles.scrollView}>
       <Table borderStyle={{ borderWidth: 2, borderColor: '#c8e1ff' }}>
         <Row data={tableHead} style={styles.head} textStyle={styles.headText} />
-        <ScrollView style={styles.scrollView}>
           {tableData.map((rowData, rowIndex) => (
             <React.Fragment key={rowIndex}>
               <TouchableOpacity onPress={() => handleRowClick(rowIndex)}>
@@ -99,15 +107,15 @@ const EnquiryScreen = ({navigation}) => {
                   <Text style={styles.cell}>Person To Contact: {rowData.personToContact}</Text>
                   <Text style={styles.cell}>Person To Contact Phone: {rowData.personToContactPhone}</Text>
                   <Button
-                    title="Go to Contract"
-                    onPress={() => navigation.navigate('Contracts')}
+                    title="Move to Contract"
+                    onPress={()=>handleSubmit(rowData)}
                   />
                 </View>
               )}
             </React.Fragment>
           ))}
-        </ScrollView>
-      </Table>
+        </Table>
+      </ScrollView>
     </SafeAreaView>
   );
 };

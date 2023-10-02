@@ -9,8 +9,10 @@ import { validationSchema } from "./../utils/validation";
 import { styles } from "./../utils/styles";
 import { RadioButton } from 'react-native-paper';
 import axios from 'axios';
-const URL = "http://13.233.26.160:3002/leads";
-const URL2 = "http://192.168.1.100:3002/leads"
+import BASE_URL from './../utils/utils' 
+const URL = BASE_URL + "leads";
+
+
 const InputScreen = () => {
   const [showModal, setShowModal] = useState(false);
   const [responseText, setResponseText] = useState('');
@@ -18,13 +20,13 @@ const InputScreen = () => {
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
   const onSubmitHandler = (values) => {
-    console.log('Login123 form values:', values);
-    axios.post(URL2, values)
+    console.log('Login form values:', values);
+    axios.post(URL, values)
     .then(response => {
       console.log("response1",response);
-      console.log("response2",response?.data?.insertedId);
+      console.log("response2",response?.data?.id);
       setTimeout(() => {
-        setResponseText(`Customer Inserted Successfully With Id : ${response?.data?.insertedId}`); // Set the response text to be shown in the modal
+        setResponseText(`Customer Inserted Successfully With Id : ${response?.data?.id}`); // Set the response text to be shown in the modal
         setShowModal(true); // Show the modal
       }, 1000); // Delay of 1 second
     })
@@ -51,7 +53,7 @@ const InputScreen = () => {
 
       <Formik
         initialValues={{
-          name: "netra213",
+          name: "",
           phone: "",
           address: "",
           email: "",
@@ -84,7 +86,8 @@ const InputScreen = () => {
               onChangeText={handleChange('name')}
               value={values.name}
             />
-            {touched.name && errors.name && <Text style={styles.error}>{errors.name}</Text>}
+             <Text style={{ color: "red" }}>{errors.name}</Text>
+            {/* {touched.name && errors.name && <Text style={styles.error}>{errors.name}</Text>} */}
           {/* </View> */}
           {/* <View style={styles.formGroup}> */}
             <TextInput
@@ -94,7 +97,7 @@ const InputScreen = () => {
                  onChangeText={handleChange("phone")}
                 //  onBlur={handleBlur("phone")}
                />
-             {/* </View> */}
+            <Text style={{ color: "red" }}>{errors.phone}</Text>
              <TextInput
                   style={styles.input}
                   value={values.landMark}
@@ -111,6 +114,7 @@ const InputScreen = () => {
                  
                   autoCapitalize="none"
                 />
+                 <Text style={{ color: "red" }}>{errors.city}</Text>
                 <TextInput
                   style={styles.input}
                   value={values.address}
@@ -119,7 +123,7 @@ const InputScreen = () => {
                   onBlur={handleBlur("address")}
                   autoCapitalize="none"
                 />
-
+ <Text style={{ color: "red" }}>{errors.address}</Text>
 <View style={styles.formGroup}>
                 <Text style={styles.label}>Person To be Contacted</Text>
 
@@ -130,10 +134,8 @@ const InputScreen = () => {
                   onChangeText={handleChange("personToContact")}
                   onBlur={handleBlur("personToContact")}
                 />
+             <Text style={{ color: "red" }}>{errors.personToContact}</Text>
 
-                {/* <ErrorMessage
-                  errorValue={touched.name && errors.name}
-                /> */}
               </View>
               <View style={styles.formGroup}>
                 <TextInput
@@ -143,6 +145,7 @@ const InputScreen = () => {
                   onChangeText={handleChange("personToContactPhone")}
                   onBlur={handleBlur("personToContactPhone")}
                 />
+                 <Text style={{ color: "red" }}>{errors.personToContactPhone}</Text>
               </View>
               <View style={styles.formGroup}>
                 <Text style={styles.label}>Property to be serviced : {propertyType}</Text>
@@ -193,19 +196,17 @@ const InputScreen = () => {
 
                   </View>
    <View style={styles.formGroup}>
-                <Text style={styles.label}>Service Start Date</Text>
+                <Text style={styles.label}>Service Start Date (ex :2023-10-02)</Text>
 
                 <TextInput
                   style={styles.input}
-                  value={values.firstName}
-                  placeholder="Name.."
-                  onChangeText={handleChange("name")}
-                  onBlur={handleBlur("name")}
+                  value={values.serviceBeginDate}
+                  placeholder="2023-10-02"
+                  onChangeText={handleChange("serviceBeginDate")}
+                  onBlur={handleBlur("serviceBeginDate")}
                 />
-
-                {/* <ErrorMessage
-                  errorValue={touched.name && errors.name}
-                /> */}
+              <Text style={{ color: "red" }}>{errors.serviceBeginDate}</Text>
+              
               </View>
               <View style={styles.formGroup}>
                 <Text style={styles.label}>Service End Date</Text>
@@ -213,14 +214,12 @@ const InputScreen = () => {
                 <TextInput
                   style={styles.input}
                   value={values.firstName}
-                  placeholder="Name.."
-                  onChangeText={handleChange("name")}
-                  onBlur={handleBlur("name")}
+                  placeholder="2023-10-02"
+                  onChangeText={handleChange("serviceExpirationDate")}
+                  onBlur={handleBlur("serviceExpirationDate")}
                 />
 
-                {/* <ErrorMessage
-                  errorValue={touched.name && errors.name}
-                /> */}
+              <Text style={{ color: "red" }}>{errors.serviceExpirationDate}</Text>
               </View>
               <View style={styles.formGroup}>
                 <Text style={styles.label}>Reneval: {isEnabled? ' Yes' : 'No'}</Text>
@@ -246,9 +245,7 @@ const InputScreen = () => {
                   onBlur={handleBlur("pestsToControl")}
                 />
 
-                {/* <ErrorMessage
-                  errorValue={touched.name && errors.name}
-                /> */}
+              <Text style={{ color: "red" }}>{errors.pestsToControl}</Text>
               </View>
               <View style={styles.formGroup}>
                 <Text style={styles.label}>Payment Terms</Text>
@@ -263,9 +260,7 @@ const InputScreen = () => {
                   numberOfLines={4} // Specify the number of lines to display (optional)
                 />
 
-                {/* <ErrorMessage
-                  errorValue={touched.name && errors.name}
-                /> */}
+              <Text style={{ color: "red" }}>{errors.paymentTerms}</Text>
               </View>
               <View style={styles.formGroup}>
                 <Text style={styles.label}>Billing Instructions</Text>
@@ -279,10 +274,7 @@ const InputScreen = () => {
                    multiline={true} // Set to true for multiline input
           numberOfLines={4} // Specify the number of lines to display (optional)
                 />
-
-                {/* <ErrorMessage
-                  errorValue={touched.name && errors.name}
-                /> */}
+                <Text style={{ color: "red" }}>{errors.billingInstructions}</Text>
               </View>
 
 
